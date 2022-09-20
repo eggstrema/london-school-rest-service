@@ -1,8 +1,8 @@
 package de.egga.controllers;
 
 import de.egga.Server;
+import de.egga.model.User;
 import de.egga.services.UserService;
-import de.egga.services.model.User;
 import io.javalin.plugin.json.JavalinJackson;
 import io.javalin.testtools.JavalinTest;
 import org.json.JSONException;

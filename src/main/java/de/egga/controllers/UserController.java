@@ -1,7 +1,7 @@
 package de.egga.controllers;
 
+import de.egga.model.User;
 import de.egga.services.UserService;
-import de.egga.services.model.User;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 

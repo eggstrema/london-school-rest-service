@@ -1,7 +1,7 @@
 package de.egga.services;
 
+import de.egga.model.User;
 import de.egga.repositories.UserRepository;
-import de.egga.services.model.User;
 
 import java.util.List;
 

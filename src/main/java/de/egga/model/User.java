@@ -1,4 +1,4 @@
-package de.egga.services.model;
+package de.egga.model;
 
 public class User {
 

@@ -1,6 +1,6 @@
 package de.egga.repositories;
 
-import de.egga.services.model.User;
+import de.egga.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

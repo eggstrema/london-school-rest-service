@@ -1,6 +1,6 @@
 package de.egga.repositories;
 
-import de.egga.services.model.User;
+import de.egga.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
