@@ -22,6 +22,13 @@ class ServerTest {
   }
 
   @Test
+  public void GET_to_fetch_personal_data_gives_200() {
+    JavalinTest.test(server.app(), (server, client) -> {
+      assertThat(client.get("/users/data").code()).isEqualTo(200);
+    });
+  }
+
+  @Test
   public void POST_to_create_users_gives_201_for_valid_username() {
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.post("/users?username=horst")

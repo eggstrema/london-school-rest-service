@@ -3,8 +3,7 @@ package de.egga;
 import de.egga.controllers.UserController;
 import io.javalin.Javalin;
 
-import static io.javalin.apibuilder.ApiBuilder.get;
-import static io.javalin.apibuilder.ApiBuilder.post;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Server {
 
@@ -14,8 +13,13 @@ public class Server {
     this.app = Javalin.create();
 
     app.routes(() -> {
-      get("/users", controller::getAll);
-      post("/users", controller::create);
+      path("users", () -> {
+        get(controller::getAll);
+        post(controller::create);
+        path("data", () -> {
+          get(controller::getData);
+        });
+      });
     });
   }
 

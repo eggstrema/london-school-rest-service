@@ -26,4 +26,8 @@ public class UserController {
   public void getAll(Context context) {
     context.json(userService.getAllUsers());
   }
+
+  public void getData(Context context) {
+
+  }
 }
