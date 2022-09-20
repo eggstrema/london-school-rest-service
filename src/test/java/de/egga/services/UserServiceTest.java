@@ -1,9 +1,9 @@
 package de.egga.services;
 
-import de.egga.exceptions.BadRequestException;
 import de.egga.exceptions.UserNotFoundException;
 import de.egga.model.User;
 import de.egga.repositories.UserRepository;
+import io.javalin.http.BadRequestResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,7 +45,7 @@ class UserServiceTest {
     assertThatThrownBy(() -> {
       service.getUser(invalidId);
 
-    }).isInstanceOf(BadRequestException.class);
+    }).isInstanceOf(BadRequestResponse.class);
   }
 
   @Test

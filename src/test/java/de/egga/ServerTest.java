@@ -1,9 +1,9 @@
 package de.egga;
 
 import de.egga.controllers.UserController;
-import de.egga.exceptions.BadRequestException;
 import de.egga.exceptions.UserNotFoundException;
 import de.egga.services.UserService;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.testtools.JavalinTest;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class ServerTest {
   }
 
   @Test
-  public void givenUnknownId__whenGetUserData_thenErrorMessage() {
+  public void givenUnknownId__whenGetUserData_thenErrorMessageInBody() {
     when(userService.getUser(any())).thenThrow(new UserNotFoundException());
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.get("/users/1337").body().string()).isEqualTo("User not found: 1337");
@@ -45,15 +45,15 @@ class ServerTest {
 
   @Test
   public void givenInvalidId__whenGetUserData_thenStatusCode() {
-    when(userService.getUser(any())).thenThrow(new BadRequestException());
+    when(userService.getUser(any())).thenThrow(new BadRequestResponse());
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.get("/users/mona").code()).isEqualTo(400);
     });
   }
 
   @Test
-  public void givenInvalidId__whenGetUserData__thenErrorMessage() {
-    when(userService.getUser(any())).thenThrow(new BadRequestException());
+  public void givenInvalidId__whenGetUserData__thenErrorMessageInBody() {
+    when(userService.getUser(any())).thenThrow(new BadRequestResponse("Not a valid ID: mona"));
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.get("/users/mona").body().string()).isEqualTo("Not a valid ID: mona");
     });

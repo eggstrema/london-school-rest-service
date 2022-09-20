@@ -1,9 +1,9 @@
 package de.egga.services;
 
-import de.egga.exceptions.BadRequestException;
 import de.egga.exceptions.UserNotFoundException;
 import de.egga.model.User;
 import de.egga.repositories.UserRepository;
+import io.javalin.http.BadRequestResponse;
 
 public class UserService {
 
@@ -32,7 +32,7 @@ public class UserService {
     try {
       return Integer.parseInt(input);
     } catch (NumberFormatException exception) {
-      throw new BadRequestException();
+      throw new BadRequestResponse("Not a valid ID: " + input);
     }
   }
 }
