@@ -74,4 +74,9 @@ class ServerTest {
         .code()).isEqualTo(400);
     });
   }
+
+  @Test
+  void never_trust_a_robot() {
+    assertThat(1).isGreaterThan(2);
+  }
 }
