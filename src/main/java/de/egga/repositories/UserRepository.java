@@ -16,4 +16,15 @@ public class UserRepository {
   public void save(User user) {
     users.add(user);
   }
+
+  public User findById(Integer id) {
+
+    for (User user : users) {
+      if (user.getId().equals(id)) {
+        return user;
+      }
+    }
+
+    return null;
+  }
 }

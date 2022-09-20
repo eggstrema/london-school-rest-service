@@ -17,11 +17,20 @@ class UserRepositoryTest {
   }
 
   @Test
-  void givenAnEmptyRepository__whenAddingAUser__anEmptyListIsReturned() {
+  void givenAnEmptyRepository__whenAddingAUser__theUserIsListed() {
     UserRepository repository = new UserRepository();
-    User anyUser = new User("Trude");
+    User anyUser = new User(1337, "Trude", "Berlin", 12353);
     repository.save(anyUser);
     List<User> allUsers = repository.getAllUsers();
     assertThat(allUsers).containsExactly(anyUser);
+  }
+
+  @Test
+  void givenAnyUser__whenFindById__theUserIsFound() {
+    UserRepository repository = new UserRepository();
+    User anyUser = new User(1337, "Trude", "Berlin", 12353);
+    repository.save(anyUser);
+    User found = repository.findById(anyUser.getId());
+    assertThat(found).isEqualTo(anyUser);
   }
 }

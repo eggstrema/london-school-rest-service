@@ -1,12 +1,15 @@
 package de.egga;
 
 import de.egga.controllers.UserController;
+import de.egga.model.User;
 import de.egga.services.UserService;
 import io.javalin.testtools.JavalinTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ServerTest {
 
@@ -23,8 +26,9 @@ class ServerTest {
 
   @Test
   public void GET_to_fetch_personal_data_gives_200() {
+    when(userService.getUser(any())).thenReturn(new User(1337, "Laura", "Berlin", 12353));
     JavalinTest.test(server.app(), (server, client) -> {
-      assertThat(client.get("/users/data").code()).isEqualTo(200);
+      assertThat(client.get("/users/1337").code()).isEqualTo(200);
     });
   }
 

@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -24,13 +25,31 @@ class UserServiceTest {
   @InjectMocks
   UserService service;
 
-  User anyUser = new User("Gerda");
+  User anyUser = new User(1337, "Gerda", "Berlin", 12353);
 
   @Test
   void whenGetAllUsers_thenRepositoryIsCalled() {
     service.getAllUsers();
 
     verify(repository).getAllUsers();
+  }
+
+  @Test
+  void whenGetUserById_thenRepositoryIsCalled() {
+    String id = "1337";
+
+    service.getUser(id);
+
+    verify(repository).findById(parseInt(id));
+  }
+
+  @Test
+  void whenGetUserById_thenDataFromRepositoryIsReturnedUnaltered() {
+    when(repository.findById(1337)).thenReturn(anyUser);
+
+    User users = service.getUser("1337");
+
+    assertThat(users).isEqualTo(anyUser);
   }
 
   @Test
@@ -48,5 +67,4 @@ class UserServiceTest {
 
     verify(repository).save(anyUser);
   }
-
 }

@@ -24,13 +24,26 @@ class UserControllerTest {
 
   @Test
   public void GET_to_fetch_users_returns_list_from_service() {
-    List<User> users = asList(new User("Paula"), new User("Karla"));
+    List<User> users = asList(new User(1337, "Paula", "Berlin", 12353), new User(1337, "Karla", "Berlin", 12353));
     when(userService.getAllUsers()).thenReturn(users);
 
     JavalinTest.test(server.app(), (server, client) -> {
       String actual = client.get("/users").body().string();
 
       assertJson(users, actual);
+    });
+  }
+
+  @Test
+  public void GET_to_fetch_user_data_returns_data_from_service() {
+    User user = new User(1337, "Laura", "Berlin", 12353);
+    String id = String.valueOf(user.getId());
+    when(userService.getUser(id)).thenReturn(user);
+
+    JavalinTest.test(server.app(), (server, client) -> {
+      String actual = client.get("/users/1337").body().string();
+
+      assertJson(user, actual);
     });
   }
 

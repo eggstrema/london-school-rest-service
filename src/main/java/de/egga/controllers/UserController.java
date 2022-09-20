@@ -18,7 +18,7 @@ public class UserController {
     if (username == null || username.length() < 5) {
       throw new BadRequestResponse();
     } else {
-      userService.persist(new User(username));
+      userService.persist(new User(1337, username, "Berlin", 12353));
       context.status(201);
     }
   }
@@ -27,7 +27,9 @@ public class UserController {
     context.json(userService.getAllUsers());
   }
 
-  public void getData(Context context) {
-
+  public void getUser(Context context) {
+    String id = context.pathParam("id");
+    User user = userService.getUser(id);
+    context.json(user);
   }
 }

@@ -16,8 +16,8 @@ public class Server {
       path("users", () -> {
         get(controller::getAll);
         post(controller::create);
-        path("data", () -> {
-          get(controller::getData);
+        path("{id}", () -> {
+          get(controller::getUser);
         });
       });
     });

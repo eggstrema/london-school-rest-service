@@ -20,4 +20,9 @@ public class UserService {
   public void persist(User user) {
     userRepository.save(user);
   }
+
+  public User getUser(String id) {
+    int parseInt = Integer.parseInt(id);
+    return userRepository.findById(parseInt);
+  }
 }
