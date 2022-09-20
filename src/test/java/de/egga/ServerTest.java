@@ -1,11 +1,13 @@
 package de.egga;
 
 import de.egga.controllers.UserController;
-import de.egga.model.User;
+import de.egga.exceptions.BadRequestException;
+import de.egga.exceptions.UserNotFoundException;
 import de.egga.services.UserService;
 import io.javalin.testtools.JavalinTest;
 import org.junit.jupiter.api.Test;
 
+import static de.egga.model.UserFactory.anyUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -18,22 +20,47 @@ class ServerTest {
   Server server = new Server(userController);
 
   @Test
-  public void GET_to_fetch_users_gives_200() {
-    JavalinTest.test(server.app(), (server, client) -> {
-      assertThat(client.get("/users").code()).isEqualTo(200);
-    });
-  }
-
-  @Test
-  public void GET_to_fetch_personal_data_gives_200() {
-    when(userService.getUser(any())).thenReturn(new User(1337, "Laura", "Berlin", 12353));
+  public void givenValidId__whenGetUserData_thenStatusCode() {
+    when(userService.getUser(any())).thenReturn(anyUser());
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.get("/users/1337").code()).isEqualTo(200);
     });
   }
 
   @Test
-  public void POST_to_create_users_gives_201_for_valid_username() {
+  public void givenUnknownId__whenGetUserData_thenStatusCode() {
+    when(userService.getUser(any())).thenThrow(new UserNotFoundException());
+    JavalinTest.test(server.app(), (server, client) -> {
+      assertThat(client.get("/users/1337").code()).isEqualTo(404);
+    });
+  }
+
+  @Test
+  public void givenUnknownId__whenGetUserData_thenErrorMessage() {
+    when(userService.getUser(any())).thenThrow(new UserNotFoundException());
+    JavalinTest.test(server.app(), (server, client) -> {
+      assertThat(client.get("/users/1337").body().string()).isEqualTo("User not found: 1337");
+    });
+  }
+
+  @Test
+  public void givenInvalidId__whenGetUserData_thenStatusCode() {
+    when(userService.getUser(any())).thenThrow(new BadRequestException());
+    JavalinTest.test(server.app(), (server, client) -> {
+      assertThat(client.get("/users/mona").code()).isEqualTo(400);
+    });
+  }
+
+  @Test
+  public void givenInvalidId__whenGetUserData__thenErrorMessage() {
+    when(userService.getUser(any())).thenThrow(new BadRequestException());
+    JavalinTest.test(server.app(), (server, client) -> {
+      assertThat(client.get("/users/mona").body().string()).isEqualTo("Not a valid ID: mona");
+    });
+  }
+
+  @Test
+  public void givenValidName__whenCreateUser__thenStatusCode() {
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.post("/users?username=horst")
         .code()).isEqualTo(201);
@@ -41,7 +68,7 @@ class ServerTest {
   }
 
   @Test
-  public void POST_to_create_users_throws_for_invalid_username() {
+  public void givenInvalidName__whenCreateUser__thenStatusCode() {
     JavalinTest.test(server.app(), (server, client) -> {
       assertThat(client.post("/users")
         .code()).isEqualTo(400);

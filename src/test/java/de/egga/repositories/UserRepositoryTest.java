@@ -3,34 +3,29 @@ package de.egga.repositories;
 import de.egga.model.User;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
+import static de.egga.model.UserFactory.anyUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserRepositoryTest {
 
-  @Test
-  void givenAnEmptyRepository__whenGetAllUsers__anEmptyListIsReturned() {
-    UserRepository repository = new UserRepository();
-    List<User> allUsers = repository.getAllUsers();
-    assertThat(allUsers).isEmpty();
-  }
+  UserRepository repository = new UserRepository();
 
   @Test
-  void givenAnEmptyRepository__whenAddingAUser__theUserIsListed() {
-    UserRepository repository = new UserRepository();
-    User anyUser = new User(1337, "Trude", "Berlin", 12353);
+  void givenAnyPersistedUser__whenFindById__theUserIsFound() {
+    User anyUser = anyUser();
     repository.save(anyUser);
-    List<User> allUsers = repository.getAllUsers();
-    assertThat(allUsers).containsExactly(anyUser);
-  }
 
-  @Test
-  void givenAnyUser__whenFindById__theUserIsFound() {
-    UserRepository repository = new UserRepository();
-    User anyUser = new User(1337, "Trude", "Berlin", 12353);
-    repository.save(anyUser);
     User found = repository.findById(anyUser.getId());
+
     assertThat(found).isEqualTo(anyUser);
+  }
+
+  @Test
+  void givenAnInvalidId__whenFindById__nullIsReturned() {
+    int unknownId = 98765;
+
+    User found = repository.findById(unknownId);
+
+    assertThat(found).isNull();
   }
 }

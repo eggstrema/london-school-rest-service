@@ -23,10 +23,6 @@ public class UserController {
     }
   }
 
-  public void getAll(Context context) {
-    context.json(userService.getAllUsers());
-  }
-
   public void getUser(Context context) {
     String id = context.pathParam("id");
     User user = userService.getUser(id);

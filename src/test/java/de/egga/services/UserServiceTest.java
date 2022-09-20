@@ -1,5 +1,7 @@
 package de.egga.services;
 
+import de.egga.exceptions.BadRequestException;
+import de.egga.exceptions.UserNotFoundException;
 import de.egga.model.User;
 import de.egga.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -8,11 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,15 +29,9 @@ class UserServiceTest {
   User anyUser = new User(1337, "Gerda", "Berlin", 12353);
 
   @Test
-  void whenGetAllUsers_thenRepositoryIsCalled() {
-    service.getAllUsers();
-
-    verify(repository).getAllUsers();
-  }
-
-  @Test
-  void whenGetUserById_thenRepositoryIsCalled() {
+  void givenValidId__whenGetUserById__thenRepositoryIsCalled() {
     String id = "1337";
+    when(repository.findById(1337)).thenReturn(anyUser);
 
     service.getUser(id);
 
@@ -44,25 +39,36 @@ class UserServiceTest {
   }
 
   @Test
-  void whenGetUserById_thenDataFromRepositoryIsReturnedUnaltered() {
+  void givenInvalidId__whenGetUserById__thenExceptionIsThrown() {
+    String invalidId = "abc";
+
+    assertThatThrownBy(() -> {
+      service.getUser(invalidId);
+
+    }).isInstanceOf(BadRequestException.class);
+  }
+
+  @Test
+  void givenValidId__whenGetUserById__thenDataFromRepositoryIsReturnedUnaltered() {
     when(repository.findById(1337)).thenReturn(anyUser);
 
-    User users = service.getUser("1337");
+    User user = service.getUser("1337");
 
-    assertThat(users).isEqualTo(anyUser);
+    assertThat(user).isEqualTo(anyUser);
   }
 
   @Test
-  void whenGetAllUsers_thenDataFromRepositoryIsReturnedUnaltered() {
-    when(repository.getAllUsers()).thenReturn(asList(anyUser));
+  void givenUnknownId__whenGetUserById__thenExceptionIsThrown() {
+    when(repository.findById(any())).thenReturn(null);
 
-    List<User> users = service.getAllUsers();
+    assertThatThrownBy(() -> {
+      service.getUser("1337");
 
-    assertThat(users).containsExactly(anyUser);
+    }).isInstanceOf(UserNotFoundException.class);
   }
 
   @Test
-  void whenSaveUser_thenRepositoryIsCalled() {
+  void givenValidUser__whenPersistUser__thenRepositoryIsCalled() {
     service.persist(anyUser);
 
     verify(repository).save(anyUser);

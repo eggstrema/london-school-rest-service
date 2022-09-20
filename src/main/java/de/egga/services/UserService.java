@@ -1,9 +1,9 @@
 package de.egga.services;
 
+import de.egga.exceptions.BadRequestException;
+import de.egga.exceptions.UserNotFoundException;
 import de.egga.model.User;
 import de.egga.repositories.UserRepository;
-
-import java.util.List;
 
 public class UserService {
 
@@ -13,16 +13,26 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public List<User> getAllUsers() {
-    return userRepository.getAllUsers();
-  }
-
   public void persist(User user) {
     userRepository.save(user);
   }
 
-  public User getUser(String id) {
-    int parseInt = Integer.parseInt(id);
-    return userRepository.findById(parseInt);
+  public User getUser(String inputParam) {
+    int id = parseUserId(inputParam);
+
+    User user = userRepository.findById(id);
+
+    if (user == null) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  private int parseUserId(String input) {
+    try {
+      return Integer.parseInt(input);
+    } catch (NumberFormatException exception) {
+      throw new BadRequestException();
+    }
   }
 }
