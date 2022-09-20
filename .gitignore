@@ -1,0 +1,15 @@
+### Vert.x ###
+.vertx/
+
+.idea/
+
+# IntelliJ
+/out/
+
+### macOS ###
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+### Maven ###
+target/
